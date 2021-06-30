@@ -124,6 +124,8 @@ public class MainMenu {
         frame.add(beginSortButton);
 
 
+
+
         // Making it all visible
         frame.setVisible(true);
 
