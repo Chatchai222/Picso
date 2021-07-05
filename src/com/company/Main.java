@@ -7,18 +7,9 @@ import Archive.Foo;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        SortPage sortPage = new SortPage();
-        try{
-            File myFile = new File("WhereFile.txt");
-            if (myFile.createNewFile()){
-                System.out.println("File created: " + myFile.getName());
-            } else {
-                System.out.println("File already exist");
-            }
-        } catch (IOException e){
-            System.out.println("Error happened");
-            e.printStackTrace();
-        }
+        //SortPage sortPage = new SortPage();
+        SortedPage sortedPage = new SortedPage();
+
 
     }
     /*

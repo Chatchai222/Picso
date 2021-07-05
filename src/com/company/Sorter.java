@@ -3,8 +3,8 @@ package com.company;
 import java.util.ArrayList;
 
 public class Sorter {
-    public static void bubbleSort(ArrayList<Integer> numberArray){
-        if (numberArray.size() <= 1){
+    public static void bubbleSort(ArrayList<String> stringArray, SortPage comparator){
+        if (stringArray.size() <= 1){
             ; // Do nothing
         } else {
             boolean swapped = true;
@@ -13,14 +13,14 @@ public class Sorter {
 
                 swapped = false;
 
-                for(int i = 1; i < numberArray.size(); i++){
+                for(int i = 1; i < stringArray.size(); i++){
 
-                    int num1 = numberArray.get(i-1);
-                    int num2 = numberArray.get(i);
+                    String str1 = stringArray.get(i-1);
+                    String str2 = stringArray.get(i);
 
-                    if (num1 >= num2){
-                        numberArray.set(i-1, num2);
-                        numberArray.set(i, num1);
+                    if (comparator.compare(str1,str2) == 1){
+                        stringArray.set(i-1, str2);
+                        stringArray.set(i, str1);
                         swapped = true;
                     }
                 }

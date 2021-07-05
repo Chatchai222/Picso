@@ -2,8 +2,19 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class SortPage {
+public class SortPage implements ActionListener {
+    // "Under the hood part"
+    private ArrayList<String> imagePaths;
+    private Sorter sorter;
+
+    private int userDecision = -1; // -1 default value
+    private boolean userChoosenDecision = false;
+
+    //-----Start of GUI part-----//
     private JFrame frame;
 
     // Prompt part
@@ -30,8 +41,21 @@ public class SortPage {
     private GridBagConstraints buttonPanelConstraints;
     private JButton leftButton;
     private JButton rightButton;
+    //-----Start of GUI part-----//
 
     SortPage(){
+        // DEBUGGING/TEST
+        imagePaths = new ArrayList<String>();
+        imagePaths.add("0.png");
+        imagePaths.add("1.png");
+        imagePaths.add("9.png");
+        imagePaths.add("3.png");
+
+        sorter = new Sorter();
+
+        // DEBUGGING/TEST
+
+
         // Initializing the frame
         frame = new JFrame();
         frame.setSize(1000,700);
@@ -123,12 +147,15 @@ public class SortPage {
         // Left button
         leftButton = new JButton();
         leftButton.setText("Left button");
+        leftButton.addActionListener(this);
 
         buttonPanel.add(leftButton);
+
 
         // Right button
         rightButton = new JButton();
         rightButton.setText("Right Button");
+        rightButton.addActionListener(this);
 
         buttonPanel.add(rightButton);
 
@@ -138,5 +165,73 @@ public class SortPage {
         // Making it all visible
         frame.setVisible(true);
 
+
+        // Getting the sorted list if images
+        sorter.bubbleSort(imagePaths, this);
+        System.out.println(imagePaths);
+
     }
+
+    private void resizeImage(ImageIcon inImg){
+        // Calculate size of image resizing
+        int newImgWidth = (int)(imagePanel.getWidth() / 2);
+        int newImgHeight = (int)(imagePanel.getHeight());
+
+        // DEBUGGING
+
+        // DEBUGGING
+
+        Image tempImg = inImg.getImage();
+        tempImg = tempImg.getScaledInstance(newImgWidth, newImgHeight, Image.SCALE_DEFAULT);
+        inImg.setImage(tempImg);
+    }
+
+    private void setLeftImage(String imgPath){
+        ImageIcon tempImg = new ImageIcon(imgPath);
+        resizeImage(tempImg);
+        leftImage.setImage(tempImg.getImage());
+        leftLabel.setIcon(leftImage);
+        leftLabel.repaint(); // This "refreshes" the label
+    }
+
+    private void setRightImage(String imgPath){
+        ImageIcon tempImg = new ImageIcon(imgPath);
+        resizeImage(tempImg);
+        rightImage.setImage(tempImg.getImage());
+        rightLabel.setIcon(rightImage);
+        rightLabel.repaint(); // This "refreshes" the label
+    }
+
+    // This "shows" the image and wait for use to compare the NOTE: THIS IS BAD WAY OF DOING IT BUT IDK HOW TO DO IT THE PROPER WAY
+    public int compare(String imgPath1, String imgPath2){
+        setLeftImage(imgPath1);
+        setRightImage(imgPath2);
+
+        while(userChoosenDecision == false){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // In between the action listener action should be called in which case it should change the userDecision to 0 or 1
+        userChoosenDecision = false;
+        return userDecision;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == leftButton){
+            System.out.println("User clicked left Button");
+            userDecision = 0;
+            userChoosenDecision = true;
+        }
+        if(e.getSource() == rightButton){
+            System.out.println("User clicked right button");
+            userDecision = 1;
+            userChoosenDecision = true;
+        }
+    }
+
+
 }
