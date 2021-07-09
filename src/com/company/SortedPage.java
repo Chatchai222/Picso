@@ -4,8 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SortedPage {
+public class SortedPage implements PicsoPage{
     private ArrayList<String> imagePaths;
+    private PageController pageController;
 
     // Frame
     private JFrame frame;
@@ -38,7 +39,7 @@ public class SortedPage {
         // Frame
         frame = new JFrame();
         frame.setSize(FRAME_WIDTH,FRAME_HEIGHT);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.setResizable(false);
 
         //-----Start displaying part-----//
@@ -115,8 +116,6 @@ public class SortedPage {
 
         frame.add(buttonPanel, BorderLayout.SOUTH);
         //-----End of button part -----//
-
-        frame.setVisible(true);
     }
 
     private void resizeImage(ImageIcon inImg){
@@ -131,5 +130,23 @@ public class SortedPage {
         Image tempImg = inImg.getImage();
         tempImg = tempImg.getScaledInstance(newImgWidth, newImgHeight, Image.SCALE_DEFAULT);
         inImg.setImage(tempImg);
+    }
+
+    @Override
+    public void createWindow() {
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void destroyWindow() {
+        frame.setVisible(false);
+    }
+
+    public PageController getPageController() {
+        return pageController;
+    }
+
+    public void setPageController(PageController pageController) {
+        this.pageController = pageController;
     }
 }

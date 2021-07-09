@@ -2,32 +2,41 @@ package com.company;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
-public class MainMenu {
+public class MainMenuPage implements ActionListener, PicsoPage {
     private JFrame frame;
     private JLabel title;
     private JTextArea description;
+
     private JPanel sorterPanel;
     private JComboBox<String> sorterComboBox;
     private JTextArea sorterDescription;
+
     private JPanel directoryPanel;
+    private JFileChooser directoryChooser;
     private JButton selectDirectoryButton;
     private JTextArea directoryTextArea;
+
     private JPanel promptPanel;
     private JLabel promptLabel;
     private JTextField promptTextField;
+
     private JButton beginSortButton;
 
-    private ArrayList<Sorter> sorters;
+    private ArrayList<String> sorterNames;
     private String directoryPath;
     private ArrayList<String> imagePaths;
+    private PageController pageController;
 
-    public MainMenu(){
+    public MainMenuPage(){
         // Initializing the frame menu
         frame = new JFrame();
         frame.setSize(420,420);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.setLayout(new GridLayout(6,1,5,5));
         frame.setTitle("MainMenu");
 
@@ -47,6 +56,8 @@ public class MainMenu {
         description.setFont(new Font("Consolas", Font.PLAIN, 10));
         description.setBackground(Color.yellow);
         description.setLineWrap(true);
+        description.setEditable(false);
+
         frame.add(description);
 
         // SorterPanel
@@ -57,14 +68,18 @@ public class MainMenu {
         sorterPanel.setLayout(new GridLayout(1,2));
 
         // SorterComboBox
-        String[] testComboBoxArray = {"Sorter1", "Sorter2", "Sorter3"};
+        String[] testComboBoxArray = {"BubbleSorter", "InsertionSorter"};
         sorterComboBox = new JComboBox(testComboBoxArray);
+
+        sorterComboBox.addActionListener(this);
+
         sorterPanel.add(sorterComboBox);
 
         // SorterDescription
         sorterDescription = new JTextArea();
         sorterDescription.setText("Insert sorter description right here");
         sorterDescription.setBackground(Color.RED);
+        sorterDescription.setLineWrap(true);
         sorterPanel.add(sorterDescription);
 
         frame.add(sorterPanel);
@@ -78,9 +93,15 @@ public class MainMenu {
         directoryPanel.setOpaque(true);
         directoryPanel.setLayout(new GridLayout(1,2));
 
+        // directoryChooser
+        directoryChooser = new JFileChooser();
+        directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
         // selectDirectoryButton
         selectDirectoryButton = new JButton();
         selectDirectoryButton.setText("Select Directory");
+
+        selectDirectoryButton.addActionListener(this);
 
         directoryPanel.add(selectDirectoryButton, BorderLayout.WEST);
 
@@ -121,12 +142,111 @@ public class MainMenu {
         // BeginSortButton
         beginSortButton = new JButton();
         beginSortButton.setText("Begin sorting!");
-        frame.add(beginSortButton);
 
+        beginSortButton.addActionListener(this);
+
+        frame.add(beginSortButton);
 
         // Making it all visible
         frame.setVisible(true);
 
     }
 
+    private String getDirectory(){
+        File tempFile = null;
+        JFrame tempFrame = new JFrame();
+
+        int option = directoryChooser.showOpenDialog(tempFrame);
+        if(option == JFileChooser.APPROVE_OPTION){
+            tempFile = directoryChooser.getSelectedFile();
+            System.out.println("Selected directory: " + tempFile.getAbsolutePath());
+        } else {
+            System.out.println("User did NOT choose a file or some error occurred");
+        }
+
+        if(tempFile == null){
+            return "";
+        } else {
+            return tempFile.getAbsolutePath();
+        }
+
+    }
+
+    private void processDirectory(){
+        String dirPath = getDirectory();
+        directoryTextArea.setText(dirPath);
+    }
+
+    private String getPrompt(){
+        return promptTextField.getText();
+    }
+
+    private void setSorterDescription(String description){
+        sorterDescription.setText(description);
+        sorterDescription.repaint();
+    }
+
+    private void processSorter(){
+
+        String sorterName = (String)sorterComboBox.getSelectedItem();
+        PicsoSorter tempSorter = SorterFactory.getSorter(sorterName);
+        if (tempSorter == null){
+            System.out.println("tempSorter in processSorter is null");
+        } else {
+            this.setSorterDescription(tempSorter.getDescription());
+        }
+
+    }
+
+    private void processBeginSort(){
+        System.out.println("Process of begin sort");
+
+        String sorterType = (String) sorterComboBox.getSelectedItem();
+        PicsoSorter tempSorter = SorterFactory.getSorter(sorterType);
+
+        String tempDirectory = directoryTextArea.getText();
+
+        String tempPrompt = this.getPrompt();
+
+        pageController.setPrompt(tempPrompt);
+        pageController.setImagesDirectory(new File(tempDirectory));
+        pageController.setSorter(tempSorter);
+
+        pageController.setCurrentPage("SORTPAGE");
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == selectDirectoryButton){
+            System.out.println("User pressed select directory button");
+            this.processDirectory();
+        }
+        if(e.getSource() == sorterComboBox){
+            System.out.println("User has selected something from Sorter ComboBox");
+            this.processSorter();
+        }
+        if(e.getSource() == beginSortButton){
+            System.out.println("User pressed beginSort button");
+            this.processBeginSort();
+        }
+    }
+
+    @Override
+    public void createWindow() {
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void destroyWindow() {
+        frame.setVisible(false);
+    }
+
+    public PageController getPageController() {
+        return pageController;
+    }
+
+    public void setPageController(PageController pageController) {
+        this.pageController = pageController;
+    }
 }

@@ -1,6 +1,8 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+
 
 public class Sorter {
     public static void bubbleSort(ArrayList<String> stringArray, SortPage comparator){

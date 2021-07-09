@@ -1,14 +1,14 @@
 package com.company;
-import java.io.File;
-import java.io.IOException;
-import Archive.Bar;
-import Archive.Foo;
 
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         //SortPage sortPage = new SortPage();
-        SortedPage sortedPage = new SortedPage();
+        //SortedPage sortedPage = new SortedPage();
+        //MainMenuPage mainMenuPage = new MainMenuPage();
+
+        PageController pageController = new PageController();
+        pageController.setCurrentPage("MAINMENUPAGE");
 
 
     }

@@ -6,13 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class SortPage implements ActionListener {
+public class SortPage implements ActionListener, PicsoComparator, PicsoPage {
     // "Under the hood part"
     private ArrayList<String> imagePaths;
-    private Sorter sorter;
+    private PicsoSorter sorter;
+    private PageController pageController;
 
     private int userDecision = -1; // -1 default value
-    private boolean userChoosenDecision = false;
+    private boolean userChosenDecision = false;
 
     //-----Start of GUI part-----//
     private JFrame frame;
@@ -47,11 +48,12 @@ public class SortPage implements ActionListener {
         // DEBUGGING/TEST
         imagePaths = new ArrayList<String>();
         imagePaths.add("0.png");
+        imagePaths.add("2.png");
         imagePaths.add("1.png");
         imagePaths.add("9.png");
         imagePaths.add("3.png");
 
-        sorter = new Sorter();
+        sorter = new InsertionSorter();
 
         // DEBUGGING/TEST
 
@@ -167,7 +169,7 @@ public class SortPage implements ActionListener {
 
 
         // Getting the sorted list if images
-        sorter.bubbleSort(imagePaths, this);
+        sorter.sort(imagePaths, this);
         System.out.println(imagePaths);
 
     }
@@ -207,15 +209,15 @@ public class SortPage implements ActionListener {
         setLeftImage(imgPath1);
         setRightImage(imgPath2);
 
-        while(userChoosenDecision == false){
+        while(userChosenDecision == false){
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        // In between the action listener action should be called in which case it should change the userDecision to 0 or 1
-        userChoosenDecision = false;
+        // In between the action listener action should be called in which case it should change the userChosenDecision to true
+        userChosenDecision = false;
         return userDecision;
     }
 
@@ -224,14 +226,31 @@ public class SortPage implements ActionListener {
         if(e.getSource() == leftButton){
             System.out.println("User clicked left Button");
             userDecision = 0;
-            userChoosenDecision = true;
+            userChosenDecision = true;
         }
         if(e.getSource() == rightButton){
             System.out.println("User clicked right button");
             userDecision = 1;
-            userChoosenDecision = true;
+            userChosenDecision = true;
         }
     }
 
 
+    @Override
+    public void createWindow() {
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void destroyWindow() {
+        frame.setVisible(false);
+    }
+
+    public PageController getPageController() {
+        return pageController;
+    }
+
+    public void setPageController(PageController pageController) {
+        this.pageController = pageController;
+    }
 }
