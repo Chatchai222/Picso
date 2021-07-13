@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 public class SortPage implements ActionListener, PicsoComparator, PicsoPage {
@@ -45,7 +46,25 @@ public class SortPage implements ActionListener, PicsoComparator, PicsoPage {
     //-----Start of GUI part-----//
 
     SortPage(){
+        // DEBUGGING/TEST
+        imagePaths = new ArrayList<String>();
+        imagePaths.add("0.png");
+        imagePaths.add("2.png");
+        imagePaths.add("1.png");
+        imagePaths.add("9.png");
+        imagePaths.add("3.png");
+
+        sorter = new InsertionSorter();
+
+        // DEBUGGING/TEST
     }
+
+    SortPage(File imagePath, PicsoSorter sorter){
+
+    }
+
+    // Check if
+    private boolean isValidFileExtension(File inFile, )
 
     private void resizeImage(ImageIcon inImg){
         // Calculate size of image resizing
@@ -111,19 +130,6 @@ public class SortPage implements ActionListener, PicsoComparator, PicsoPage {
 
     @Override
     public void createWindow() {
-        // DEBUGGING/TEST
-        imagePaths = new ArrayList<String>();
-        imagePaths.add("0.png");
-        imagePaths.add("2.png");
-        imagePaths.add("1.png");
-        imagePaths.add("9.png");
-        imagePaths.add("3.png");
-
-        sorter = new InsertionSorter();
-
-        // DEBUGGING/TEST
-
-
         // Initializing the frame
         frame = new JFrame();
         frame.setSize(1000,700);
