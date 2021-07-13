@@ -26,14 +26,13 @@ public class Main {
         System.out.println("In main directoryPath is " + directoryPath);
 
         // Initialize up the sort page
-        SortPage sortPage = new SortPage();
+        PicsoSorter bubbleSorter= new BubbleSorter();
+        SortPage sortPage = new SortPage(new File(directoryPath), bubbleSorter);
+
         sortPage.createWindow();
+        sortPage.destroyWindow();
 
-
-
-
-
-
+        System.out.println("End of Picso program");
     }
 
     // Get the directory from user by opening up a file dialog

@@ -59,12 +59,21 @@ public class SortPage implements ActionListener, PicsoComparator, PicsoPage {
         // DEBUGGING/TEST
     }
 
-    SortPage(File imagePath, PicsoSorter sorter){
-
+    SortPage(File imageFolder, PicsoSorter inSorter){
+        this.createImagePaths(imageFolder);
+        this.sorter = inSorter;
     }
 
-    // Check if
-    private boolean isValidFileExtension(File inFile, )
+    //  Initializes the imagePaths from an imageFolder
+    private void createImagePaths(File imageFolder){
+        imagePaths = new ArrayList<String>();
+
+        File[] tempFileList = imageFolder.listFiles();
+        for (File f: tempFileList){
+            imagePaths.add(f.getAbsolutePath());
+        }
+
+    }
 
     private void resizeImage(ImageIcon inImg){
         // Calculate size of image resizing
