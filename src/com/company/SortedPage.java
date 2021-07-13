@@ -39,7 +39,7 @@ public class SortedPage implements PicsoPage{
         // Frame
         frame = new JFrame();
         frame.setSize(FRAME_WIDTH,FRAME_HEIGHT);
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
 
         //-----Start displaying part-----//

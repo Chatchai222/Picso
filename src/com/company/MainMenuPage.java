@@ -8,35 +8,129 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class MainMenuPage implements ActionListener, PicsoPage {
+
+    // Regarding the main frame title and description
     private JFrame frame;
     private JLabel title;
     private JTextArea description;
 
+    // Variable for the sorter part
     private JPanel sorterPanel;
     private JComboBox<String> sorterComboBox;
     private JTextArea sorterDescription;
 
+    // Variable for the directory part
     private JPanel directoryPanel;
     private JFileChooser directoryChooser;
     private JButton selectDirectoryButton;
     private JTextArea directoryTextArea;
 
+    // Variable for the prompt part
     private JPanel promptPanel;
     private JLabel promptLabel;
     private JTextField promptTextField;
 
     private JButton beginSortButton;
 
+    // The under the hood stuff
     private ArrayList<String> sorterNames;
     private String directoryPath;
     private ArrayList<String> imagePaths;
     private PageController pageController;
 
     public MainMenuPage(){
+    }
+
+    // Get the directory from user by opening up a file dialog
+    private String getDirectory(){
+        File tempFile = null;
+        JFrame tempFrame = new JFrame();
+
+        int option = directoryChooser.showOpenDialog(tempFrame);
+        if(option == JFileChooser.APPROVE_OPTION){
+            tempFile = directoryChooser.getSelectedFile();
+            System.out.println("Selected directory: " + tempFile.getAbsolutePath());
+        } else {
+            System.out.println("User did NOT choose a file or some error occurred");
+        }
+
+        if(tempFile == null){
+            return "";
+        } else {
+            return tempFile.getAbsolutePath();
+        }
+
+    }
+
+    // Facade for getting the directory displaying the directory on the screen
+    private void processDirectory(){
+        String dirPath = getDirectory();
+        directoryTextArea.setText(dirPath);
+    }
+
+    private String getPrompt(){
+        return promptTextField.getText();
+    }
+
+    // Set the sorter description box
+    private void setSorterDescription(String description){
+        sorterDescription.setText(description);
+        sorterDescription.repaint();
+    }
+
+    // Facade for selecting a sorter
+    private void processSorter(){
+
+        String sorterName = (String)sorterComboBox.getSelectedItem();
+        PicsoSorter tempSorter = SorterFactory.getSorter(sorterName);
+        if (tempSorter == null){
+            System.out.println("tempSorter in processSorter is null");
+        } else {
+            this.setSorterDescription(tempSorter.getDescription());
+        }
+
+    }
+
+    private void processBeginSort(){
+        System.out.println("Process of begin sort");
+
+        String sorterType = (String) sorterComboBox.getSelectedItem();
+        PicsoSorter tempSorter = SorterFactory.getSorter(sorterType);
+
+        String tempDirectory = directoryTextArea.getText();
+
+        String tempPrompt = this.getPrompt();
+
+        pageController.setPrompt(tempPrompt);
+        pageController.setImagesDirectory(new File(tempDirectory));
+        pageController.setSorter(tempSorter);
+
+        pageController.setCurrentPage("SORTPAGE");
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == selectDirectoryButton){
+            System.out.println("User pressed select directory button");
+            this.processDirectory();
+        }
+        if(e.getSource() == sorterComboBox){
+            System.out.println("User has selected something from Sorter ComboBox");
+            this.processSorter();
+        }
+        if(e.getSource() == beginSortButton){
+            System.out.println("User pressed beginSort button");
+            this.processBeginSort();
+        }
+    }
+
+    @Override
+    public void createWindow() {
         // Initializing the frame menu
         frame = new JFrame();
         frame.setSize(420,420);
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(6,1,5,5));
         frame.setTitle("MainMenu");
 
@@ -149,97 +243,12 @@ public class MainMenuPage implements ActionListener, PicsoPage {
 
         // Making it all visible
         frame.setVisible(true);
-
-    }
-
-    private String getDirectory(){
-        File tempFile = null;
-        JFrame tempFrame = new JFrame();
-
-        int option = directoryChooser.showOpenDialog(tempFrame);
-        if(option == JFileChooser.APPROVE_OPTION){
-            tempFile = directoryChooser.getSelectedFile();
-            System.out.println("Selected directory: " + tempFile.getAbsolutePath());
-        } else {
-            System.out.println("User did NOT choose a file or some error occurred");
-        }
-
-        if(tempFile == null){
-            return "";
-        } else {
-            return tempFile.getAbsolutePath();
-        }
-
-    }
-
-    private void processDirectory(){
-        String dirPath = getDirectory();
-        directoryTextArea.setText(dirPath);
-    }
-
-    private String getPrompt(){
-        return promptTextField.getText();
-    }
-
-    private void setSorterDescription(String description){
-        sorterDescription.setText(description);
-        sorterDescription.repaint();
-    }
-
-    private void processSorter(){
-
-        String sorterName = (String)sorterComboBox.getSelectedItem();
-        PicsoSorter tempSorter = SorterFactory.getSorter(sorterName);
-        if (tempSorter == null){
-            System.out.println("tempSorter in processSorter is null");
-        } else {
-            this.setSorterDescription(tempSorter.getDescription());
-        }
-
-    }
-
-    private void processBeginSort(){
-        System.out.println("Process of begin sort");
-
-        String sorterType = (String) sorterComboBox.getSelectedItem();
-        PicsoSorter tempSorter = SorterFactory.getSorter(sorterType);
-
-        String tempDirectory = directoryTextArea.getText();
-
-        String tempPrompt = this.getPrompt();
-
-        pageController.setPrompt(tempPrompt);
-        pageController.setImagesDirectory(new File(tempDirectory));
-        pageController.setSorter(tempSorter);
-
-        pageController.setCurrentPage("SORTPAGE");
-
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == selectDirectoryButton){
-            System.out.println("User pressed select directory button");
-            this.processDirectory();
-        }
-        if(e.getSource() == sorterComboBox){
-            System.out.println("User has selected something from Sorter ComboBox");
-            this.processSorter();
-        }
-        if(e.getSource() == beginSortButton){
-            System.out.println("User pressed beginSort button");
-            this.processBeginSort();
-        }
-    }
-
-    @Override
-    public void createWindow() {
-        frame.setVisible(true);
     }
 
     @Override
     public void destroyWindow() {
         frame.setVisible(false);
+        frame.dispose();
     }
 
     public PageController getPageController() {

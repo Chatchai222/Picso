@@ -17,11 +17,21 @@ public class PageController {
     private File imagesDirectory;
     private ArrayList<String> sortedImages;
 
+    public PageController(){
+    }
+
     public void setCurrentPage(String pageName){
 
         // Checking if there is current page
         if (currentPage != null){
             currentPage.destroyWindow();
+            currentPage = null;
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         if (pageName.equalsIgnoreCase("MAINMENUPAGE")){

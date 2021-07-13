@@ -45,6 +45,72 @@ public class SortPage implements ActionListener, PicsoComparator, PicsoPage {
     //-----Start of GUI part-----//
 
     SortPage(){
+    }
+
+    private void resizeImage(ImageIcon inImg){
+        // Calculate size of image resizing
+        int newImgWidth = (int)(imagePanel.getWidth() / 2);
+        int newImgHeight = (int)(imagePanel.getHeight());
+
+        // DEBUGGING
+
+        // DEBUGGING
+
+        Image tempImg = inImg.getImage();
+        tempImg = tempImg.getScaledInstance(newImgWidth, newImgHeight, Image.SCALE_DEFAULT);
+        inImg.setImage(tempImg);
+    }
+
+    private void setLeftImage(String imgPath){
+        ImageIcon tempImg = new ImageIcon(imgPath);
+        resizeImage(tempImg);
+        leftImage.setImage(tempImg.getImage());
+        leftLabel.setIcon(leftImage);
+        leftLabel.repaint(); // This "refreshes" the label
+    }
+
+    private void setRightImage(String imgPath){
+        ImageIcon tempImg = new ImageIcon(imgPath);
+        resizeImage(tempImg);
+        rightImage.setImage(tempImg.getImage());
+        rightLabel.setIcon(rightImage);
+        rightLabel.repaint(); // This "refreshes" the label
+    }
+
+    // This "shows" the image and wait for use to compare the NOTE: THIS IS BAD WAY OF DOING IT BUT IDK HOW TO DO IT THE PROPER WAY
+    public int compare(String imgPath1, String imgPath2){
+        setLeftImage(imgPath1);
+        setRightImage(imgPath2);
+
+        while(userChosenDecision == false){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // In between the action listener action should be called in which case it should change the userChosenDecision to true
+        userChosenDecision = false;
+        return userDecision;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == leftButton){
+            System.out.println("User clicked left Button");
+            userDecision = 0;
+            userChosenDecision = true;
+        }
+        if(e.getSource() == rightButton){
+            System.out.println("User clicked right button");
+            userDecision = 1;
+            userChosenDecision = true;
+        }
+    }
+
+
+    @Override
+    public void createWindow() {
         // DEBUGGING/TEST
         imagePaths = new ArrayList<String>();
         imagePaths.add("0.png");
@@ -167,78 +233,9 @@ public class SortPage implements ActionListener, PicsoComparator, PicsoPage {
         // Making it all visible
         frame.setVisible(true);
 
-
         // Getting the sorted list if images
         sorter.sort(imagePaths, this);
         System.out.println(imagePaths);
-
-    }
-
-    private void resizeImage(ImageIcon inImg){
-        // Calculate size of image resizing
-        int newImgWidth = (int)(imagePanel.getWidth() / 2);
-        int newImgHeight = (int)(imagePanel.getHeight());
-
-        // DEBUGGING
-
-        // DEBUGGING
-
-        Image tempImg = inImg.getImage();
-        tempImg = tempImg.getScaledInstance(newImgWidth, newImgHeight, Image.SCALE_DEFAULT);
-        inImg.setImage(tempImg);
-    }
-
-    private void setLeftImage(String imgPath){
-        ImageIcon tempImg = new ImageIcon(imgPath);
-        resizeImage(tempImg);
-        leftImage.setImage(tempImg.getImage());
-        leftLabel.setIcon(leftImage);
-        leftLabel.repaint(); // This "refreshes" the label
-    }
-
-    private void setRightImage(String imgPath){
-        ImageIcon tempImg = new ImageIcon(imgPath);
-        resizeImage(tempImg);
-        rightImage.setImage(tempImg.getImage());
-        rightLabel.setIcon(rightImage);
-        rightLabel.repaint(); // This "refreshes" the label
-    }
-
-    // This "shows" the image and wait for use to compare the NOTE: THIS IS BAD WAY OF DOING IT BUT IDK HOW TO DO IT THE PROPER WAY
-    public int compare(String imgPath1, String imgPath2){
-        setLeftImage(imgPath1);
-        setRightImage(imgPath2);
-
-        while(userChosenDecision == false){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // In between the action listener action should be called in which case it should change the userChosenDecision to true
-        userChosenDecision = false;
-        return userDecision;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == leftButton){
-            System.out.println("User clicked left Button");
-            userDecision = 0;
-            userChosenDecision = true;
-        }
-        if(e.getSource() == rightButton){
-            System.out.println("User clicked right button");
-            userDecision = 1;
-            userChosenDecision = true;
-        }
-    }
-
-
-    @Override
-    public void createWindow() {
-        frame.setVisible(true);
     }
 
     @Override
